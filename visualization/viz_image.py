@@ -12,14 +12,14 @@ import cv2
 
 def plot_img_and_mask(img, mask):
 
-    # jpg文件转换为RGB
-    # mask文件单通道读取
-
+    # =================================
     # jpg 和 mask 单独显示
+    # =================================
+
     # 根据mask文件的通道数判断类别
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    classes = mask.shape[2] if len(mask.shape) > 2 else 1
-    fig, ax = plt.subplots(1, classes + 1)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # classes = mask.shape[2] if len(mask.shape) > 2 else 1
+    # fig, ax = plt.subplots(1, classes + 1)
 
     # ax[0].set_title('JPG')
     # ax[0].imshow(img)
@@ -33,7 +33,9 @@ def plot_img_and_mask(img, mask):
     # plt.xticks([]), plt.yticks([])
     # plt.show()
 
+    # =================================
     # jpg 和 mask 叠加显示
+    # =================================
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     img_fill = img.copy()
     for i in range(len(contours)):
@@ -51,7 +53,9 @@ def plot_img_and_mask(img, mask):
 
 if __name__ == '__main__':
 
+    
     img = cv2.imread('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs/rs00012_aug_0.jpg')
+    # mask文件单通道读取
     mask = cv2.imread('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks/rs00012_aug_0.png',0)
 
     plot_img_and_mask(img, mask)
