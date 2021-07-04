@@ -32,8 +32,8 @@ def corss_hatch_rail(im_vis, coords, color_left=(255,255,0), color_right=(127,12
 
 def json_to_img(inp_path_json, line_thickness=2):
     inp_json = json.load(open(inp_path_json, 'r'))
-    im_json = np.zeros((inp_json["imgHeight"], inp_json["imgWidth"],3), dtype=np.uint8)
-    for obj in inp_json["objects"]:
+    im_json = np.zeros((inp_json["imageHeight"], inp_json["imageWidth"],3), dtype=np.uint8)
+    for obj in inp_json["shapes"]:
         col = rs19_label2bgr.get(obj["label"],[255,255,255])
         if "boundingbox" in obj:
             cv2.rectangle(im_json, tuple(obj["boundingbox"][0:2]), tuple(obj["boundingbox"][2:4]), col, line_thickness)
@@ -48,14 +48,16 @@ def json_to_img(inp_path_json, line_thickness=2):
         elif "polyline" in obj:
             rail_draw = np.around(np.array(obj["polyline"])).astype(np.int32)
             cv2.polylines(im_json, [rail_draw], False, col, line_thickness)
-    return im_json, inp_json["frame"]
+    return im_json, inp_json["imagePath"]
      
 def get_joined_img(inp_path_json, jpg_folder, uint8_folder, lut_bgr, blend_vals=[0.65,0.25,0.1]):
     im_json, frameid = json_to_img(inp_path_json, line_thickness=2) #visualize geometric annotations
-    inp_path_jpg = os.path.join(jpg_folder,frameid+".jpg")  
-    inp_path_uint8 = os.path.join(uint8_folder,frameid+".png")
+    image_name = frameid.split('/')[2].split('.')[0]
+    inp_path_jpg = os.path.join(jpg_folder,image_name + ".jpg")
+    print('Current JPG: {}.jpg'.format(image_name))
+    inp_path_uint8 = os.path.join(uint8_folder,image_name + ".png")
     im_jpg = cv2.imread(inp_path_jpg) #add intensity image as background
-    im_id_map = cv2.imread(inp_path_uint8,cv2.CV_LOAD_IMAGE_GRAYSCALE) #get semantic label map
+    im_id_map = cv2.imread(inp_path_uint8,0) #get semantic label map
     im_id_col = np.zeros((im_id_map.shape[0], im_id_map.shape[1], 3), np.uint8)
     for c in range(3):
         im_id_col[:,:,c] = lut_bgr[c][im_id_map] #apply color coding
@@ -76,15 +78,20 @@ def vis_all_json(json_folder, jpg_folder, uint8_folder, inp_path_config_json):
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--jpgs', type=str, default="./jpgs/rs19_val",
+    parser.add_argument('--jpgs', type=str, 
+                        default="/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jpgs",
                         help="Folder containing all RGB intensity images")
-    parser.add_argument('--jsons', type=str, default="./jsons/rs19_val",
+    parser.add_argument('--jsons', type=str, 
+                        default="/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jsons",
                         help="Folder containing all geometry-based annotation files")
-    parser.add_argument('--uint8', type=str, default="./uint8/rs19_val",
+    parser.add_argument('--uint8', type=str, 
+                        default="/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks",
                         help="Folder containing all dense semantic segm. id maps")
-    parser.add_argument('--config', type=str, default="./rs19-config.json",
+    parser.add_argument('--config', type=str, 
+                        default="/media/lcq/Data/modle_and_code/DataSet/RailGuard200/config.json",
                         help="Path to config json for dense label map interpretation")
     args = parser.parse_args(argv)
+    
     return vis_all_json(args.jsons, args.jpgs, args.uint8, args.config)
     
 if __name__ == "__main__":
