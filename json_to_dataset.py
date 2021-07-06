@@ -35,13 +35,16 @@ def main():
  
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', type=str, \
-						default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jsons',
+						# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jsons',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jsons',
                         help='JSON Path')
     parser.add_argument('--out_masks', type=str, \
-					 	default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks',
+					 	# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks',
                         help='masks save path')
     parser.add_argument('--out_vizs', type=str, \
-					 	default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/vizs',
+					 	# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/vizs',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/vizs',
                         help='viz save path')
     args = parser.parse_args()
  
@@ -51,13 +54,17 @@ def main():
 
     #freedom
     list_path = os.listdir(json_file)
+    filenum = len(list_path)
 
     print('================ Start ================')
     print('JSON Path    : {}'.format(json_file))
-    print('File Number  : {}'.format(len(list_path)))
+    print('File Number  : {}'.format(filenum))
 
-    for i in tqdm(range(0,len(list_path))):
+    for i in range(0,len(list_path)):
+        
+        # json 文件绝对路径
         path = os.path.join(json_file,list_path[i])
+        
         if os.path.isfile(path):
  
             data = json.load(open(path))
@@ -107,7 +114,7 @@ def main():
             # with open(osp.join(out_dir1, 'info.yaml'), 'w') as f:
             #     yaml.safe_dump(info, f, default_flow_style=False)
  
-            print('{} result Saved'.format(list_path[i]))
+            print('{}/{}: {} result Saved'.format(i+1,filenum,list_path[i]))
  
 if __name__ == '__main__':
     #base64path = argv[1]

@@ -69,11 +69,11 @@ def mask_aug():
             MotionBlur(blur_limit=5, p=1),
             MedianBlur(blur_limit=5, p=1),],p=1),
         
-        CoarseDropout(p=1.0, max_holes=40, max_height=40, max_width=40, min_holes=10, min_height=10, min_width=10),
+        CoarseDropout(p=1.0, max_holes=50, max_height=50, max_width=50, min_holes=10, min_height=10, min_width=10),
         Downscale(p=1.0, scale_min=0.25, scale_max=0.25, interpolation=0),
         Rotate(p=1.0, limit=(-40, 40), interpolation=0, border_mode=0, value=(0, 0, 0), mask_value=None),
-        ShiftScaleRotate(p=1.0, shift_limit=(-0.1, 0.1), scale_limit=(-0.25, 0.25), rotate_limit=(-25, 25)),
-        ShiftScaleRotate(p=1.0, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-25, 25))
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.05, 0.05), scale_limit=(-0.5, 0.5), rotate_limit=(-20, 20)),
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20))
         ])
 
     return aug
@@ -81,16 +81,16 @@ def mask_aug():
 def main():
 
     # 测试
-    train_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
-    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks/')  # 输入 mask 地址
-    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
-    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
+    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
+    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks/')  # 输入 mask 地址
+    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
+    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
     
     # RailGuard
-    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jpgs/')  # 输入 img 地址
-    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks/')  # 输入 mask 地址
-    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs/')  # 输入增强img存放地址
-    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_masks/')  # 输入增强mask存放地址
+    train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jpgs/')  # 输入 img 地址
+    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks/')  # 输入 mask 地址
+    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs/')  # 输入增强img存放地址
+    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_masks/')  # 输入增强mask存放地址
 
     num = 8  # 输入增强图像增强的张数。
 

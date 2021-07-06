@@ -58,12 +58,12 @@ def show_all(jpg_dir, masks_dir):
 if __name__=='__main__':
 
     # 测试路径
-    jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs'
-    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks'
+    # jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs'
+    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks'
     
     # RailGuard
-    # jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jpgs'
-    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks'
+    jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs'
+    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_ masks'
  
     show_all(jpg_dir, masks_dir)
 
