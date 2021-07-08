@@ -1,2 +1,11 @@
+
+# pyc
+__pycache__/
+
+# vscode
+.vscode/
+
+# file
 *.jpg
 *.png
+*.csv
