@@ -11,8 +11,10 @@
 ├── augmentation               # 数据扩增             
 │   ├── aug_examples.py        
 │   ├── aug_image.py           # 单张图片
-│   └── aug_mask.py            # 用于语义分割，图片和掩码同时
+│   ├── aug_detection.py       # 目标检测，图片和标签同时
+│   └── aug_mask.py            # 语义分割，图片和掩码同时
 ├── dataset                    # 测试数据集
+│   ├── detection
 │   ├── aug_jpgs
 │   ├── aug_masks
 │   ├── jpgs
@@ -36,6 +38,4 @@
 - opencv-pyhton
 - albumentations
 
-安装，缺啥补啥
-
-`pip install numpy opencv-pyhton albumentations`
+安装，缺啥补啥`pip install numpy opencv-pyhton albumentations`
