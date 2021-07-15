@@ -5,6 +5,9 @@ __pycache__/
 # vscode
 .vscode/
 
+# path
+dataset/*/
+
 # file
 *.jpg
 *.png

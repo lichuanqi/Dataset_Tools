@@ -11,7 +11,7 @@
 
 import argparse
 import json
-import os
+import os, glob
 import os.path as osp
 import base64
 import warnings
@@ -36,15 +36,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', type=str, \
 						# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jsons',
-                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jsons',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard/jsons',
                         help='JSON Path')
     parser.add_argument('--out_masks', type=str, \
 					 	# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks',
-                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard/masks',
                         help='masks save path')
     parser.add_argument('--out_vizs', type=str, \
 					 	# default='/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/vizs',
-                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard200/vizs',
+                        default='/media/lcq/Data/modle_and_code/DataSet/RailGuard/vizs',
                         help='viz save path')
     args = parser.parse_args()
  
@@ -55,6 +55,12 @@ def main():
     #freedom
     list_path = os.listdir(json_file)
     filenum = len(list_path)
+
+    # 保存路径不存在的新建    
+    if not os.path.exists(mask_path):
+        os.makedirs(mask_path)
+    if not os.path.exists(viz_path):
+        os.makedirs(viz_path)
 
     print('================ Start ================')
     print('JSON Path    : {}'.format(json_file))

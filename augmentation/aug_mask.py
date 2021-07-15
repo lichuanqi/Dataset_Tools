@@ -24,6 +24,9 @@ from albumentations import (
     Blur,                      # 滤波
     MotionBlur,                # 运动滤波
     MedianBlur,                # 中值滤波
+    ChannelDropout,
+    ChannelShuffle,
+    RGBShift,
     CoarseDropout,             # 随机填充黑色
     Downscale,                 # 降低分辨率
     Rotate,                    # 旋转
@@ -78,21 +81,59 @@ def mask_aug():
 
     return aug
 
+
+def mask_one_aug():
+    '''
+    功能：
+        一次只使用一种扩增方式 
+    '''
+    aug = [
+                
+        Compose(transforms=[OneOf([
+            RandomGamma(gamma_limit=(80, 120), p=0.5),
+            RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
+            CLAHE(clip_limit=4.0, tile_grid_size=(4, 4), p=0.5),],p=1)]),
+        
+        Compose(transforms=[OneOf([
+            Blur(blur_limit=5, p=1),
+            MotionBlur(blur_limit=5, p=1),
+            MedianBlur(blur_limit=5, p=1),],p=1)]),
+
+        Compose(transforms=[OneOf([
+            ChannelDropout(p=1.0, channel_drop_range=(1, 1), fill_value=0),
+            ChannelShuffle(p=1.0),
+            RGBShift(p=1.0, r_shift_limit=(-40,40), g_shift_limit=(-40,40), b_shift_limit=(-40,40))
+            ],p=1)]),
+
+        Compose(transforms=[OneOf([
+            VerticalFlip(p=1.0),
+            HorizontalFlip(p=1.0)],p=1)]),
+        
+        CoarseDropout(p=1.0, max_holes=50, max_height=50, max_width=50, min_holes=10, min_height=10, min_width=10),
+        Downscale(p=1.0, scale_min=0.25, scale_max=0.25, interpolation=0),
+        Rotate(p=1.0, limit=(-40, 40), interpolation=0, border_mode=0, value=(0, 0, 0), mask_value=None),
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.05, 0.05), scale_limit=(-0.5, 0.5), rotate_limit=(-20, 20)),
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20)),
+        ]
+
+    return aug
+
+
 def main():
 
     # 测试
-    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
-    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/masks/')  # 输入 mask 地址
-    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
-    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
+    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
+    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/masks/')  # 输入 mask 地址
+    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
+    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
     
     # RailGuard
-    train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/jpgs/')  # 输入 img 地址
-    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/masks/')  # 输入 mask 地址
-    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs/')  # 输入增强img存放地址
-    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_masks/')  # 输入增强mask存放地址
+    train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/jpgs/')  # 输入 img 地址
+    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/masks/')  # 输入 mask 地址
+    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/aug_jpgs/')  # 输入增强img存放地址
+    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/aug_masks/')  # 输入增强mask存放地址
 
-    num = 8  # 输入增强图像增强的张数。
+    num = 9  # 输入增强图像增强的张数。
 
     train_img, masks = data_num(train_path, mask_path)
     # print(train_img)
@@ -121,7 +162,16 @@ def main():
 
         for i in range(0,num):
             
-            aug = mask_aug()[i]
+            # 每次依次使用所有变换
+            # aug = mask_aug()
+
+            # 每次只使用一种变换,当扩增数量大于方法数量时从头开始
+            aug = mask_one_aug()
+            if i > len(aug):
+                aug = aug[(i%len(aug))]       
+            else:
+                aug = aug[i]
+
             augmented = aug(image=image, mask=mask)
             aug_image = augmented['image']
             aug_mask = augmented['mask']

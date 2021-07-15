@@ -25,22 +25,20 @@ from albumentations import (
     ChannelDropout,
     ChannelShuffle,
     RGBShift,
-    Flip,                      # 水平、垂直或同时水平和垂直翻转
-    CLAHE,                     # 对比度受限状况下的自适应直方图均衡化算法
     RandomBrightnessContrast,  # 随机选择图片的对比度和亮度
     RandomGamma,               # Gamma变换
+    CLAHE,                     # 对比度受限状况下的自适应直方图均衡化算法
     Blur,                      # 滤波
     MotionBlur,                # 运动滤波
     MedianBlur,                # 中值滤波
-    Downscale,                 # 降低分辨率
+
+    Flip,                      # 水平、垂直或同时水平和垂直翻转
     RandomResizedCrop,         # 剪裁并缩放
     Rotate,                    # 旋转
     ShiftScaleRotate,          # 平移/缩放/旋转三合一
 
     #  未使用
-    HorizontalFlip,            # 随机水平翻转
-    VerticalFlip,              # 随机垂直翻转
-    CropAndPad,                # 剪裁并填充
+    Downscale,                 # 降低分辨率
     CoarseDropout,             # 随机填充黑色，目标检测不能用
     Resize,                    # 拉伸图片修改尺寸
     PadIfNeeded,
@@ -51,21 +49,11 @@ from albumentations import (
     GridDistortion,
     OpticalDistortion,
     RandomSizedCrop,           # 随机尺寸裁剪并缩放回原始大小
-    RandomResizedCrop,         # 随机尺寸裁剪并缩放指定大小
     Normalize,                 # 标准化
     )
 
 
 def data_num(train_path, mask_path):
-    #train_img = glob.glob(train_path)
-    #masks = glob.glob(mask_path)
-    train_img = os.listdir(train_path)
-    masks = os.listdir(mask_path)
-
-    return train_img, masks
-
-
-def parse_xml(xml_path):
     '''
     功能：
         从xml文件中提取bounding box信息
@@ -76,12 +64,26 @@ def parse_xml(xml_path):
         [[x_min, y_min, width, height]]
         [lables]
     '''
+    train_img = os.listdir(train_path)
+    masks = os.listdir(mask_path)
+
+    return train_img, masks
+
+
+def parse_xml(xml_path):
+    '''
+    功能：
+        从xml文件中提取 bounding box 信息
+    输入：
+        xml_path: xml 文件路径
+    输出：
+        bounding box 信息, 格式为 [[x_min, y_min, width, height, lables]]
+    '''
     tree = ET.parse(xml_path)
     root = tree.getroot()
     objs = root.findall('object')
 
     coords = list()
-    labels = list()
     
     for ix, obj in enumerate(objs):
         name = obj.find('name').text
@@ -92,9 +94,8 @@ def parse_xml(xml_path):
         y_max = int(box[3].text)
         width  = int(box[2].text) - int(box[0].text)
         height = int(box[3].text) - int(box[1].text)
-        # coords.append([x_min, y_min, width, height])
-        # labels.append(name)
         coords.append([x_min, y_min, width, height, name])
+
     return coords
 
 
@@ -103,9 +104,9 @@ def generate_xml(img_name,coords,img_size,aug_xml_temp):
     功能：
         将bounding box信息写入xml文件中,
     输入：
-        img_name     ：图片名称，如a.jpg
-        coords       : 坐标list，格式为[[x_min, y_min, x_max, y_max, name]]
-        img_size     ：图像的大小,格式为[h,w,c]
+        img_name     ：图片名称，如 a.jpg
+        coords       : 坐标list，格式为 [[x_min, y_min, x_max, y_max, labels]]
+        img_size     ：图像的大小,格式为 [h,w,c]
         aug_xml_temp : xml文件输出的路径和名称
     '''
     doc = DOC.Document()  # 创建DOM文档对象
@@ -249,14 +250,14 @@ def mask_one_aug():
             p=1)],bbox_params=bbox_params),
         
         Compose(transforms=[OneOf([
-            Blur(blur_limit=5, p=1),
-            MotionBlur(blur_limit=5, p=1),
-            MedianBlur(blur_limit=5, p=1),],
+            Blur(blur_limit=7, p=1),
+            MotionBlur(blur_limit=7, p=1),
+            MedianBlur(blur_limit=7, p=1),],
             p=1)],bbox_params=bbox_params),
         
         Compose(transforms=[OneOf([
             ChannelDropout(p=1.0, channel_drop_range=(1, 1), fill_value=0),
-            ChannelShuffle(always_apply=False, p=1.0),
+            ChannelShuffle(p=1.0),
             RGBShift(p=1.0, r_shift_limit=(-40,40), g_shift_limit=(-40,40), b_shift_limit=(-40,40))
             ],p=1)],bbox_params=bbox_params),
 
@@ -287,11 +288,17 @@ def mask_one_aug():
 def main():
 
     # 测试
-    img_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/anno/')         # 要扩增的 jpg 路径
-    xml_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/xml/')          # 要扩增的 xml 路径
-    aug_img_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/aug_anno/') # 扩增后的 jpg 路径
-    aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/aug_xml/')  # 扩增后的 xml 路径
+    # img_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/anno/')         # 要扩增的 jpg 路径
+    # xml_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/xml/')          # 要扩增的 xml 路径
+    # aug_img_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/aug_anno/') # 扩增后的 jpg 路径
+    # aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/aug_xml/')  # 扩增后的 xml 路径
     
+    # ICIG
+    img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/images/')
+    xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/annotations/')
+    aug_img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/aug_images/')
+    aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/augf_annotations/')
+
     # 图像增强数量
     num = 8
 
@@ -312,11 +319,11 @@ def main():
         jpg_path_temp = os.path.join(img_path, image_name+'.jpg')
         xml_path_temp = os.path.join(xml_path, image_name+'.xml')
 
-        # 分别读取
+        # 分别读取图片和标签文件
         image = cv2.imread(jpg_path_temp)
         boxes = parse_xml(xml_path_temp)
 
-        # 原图保存到扩增保存路径
+        # 将原图及对应标签复制到扩增保存路径
         shutil.copy(jpg_path_temp, aug_img_path + "{}.jpg".format(image_name))
         shutil.copy(xml_path_temp, aug_xml_path + "{}.xml".format(image_name))
 
@@ -325,8 +332,7 @@ def main():
             # 每次依次使用所有变换
             # aug = mask_aug()                         
             
-            # 每次只使用一种变换
-            # 当扩增数量大于方法数量时从头开始
+            # 每次只使用一种变换,当扩增数量大于方法数量时从头开始
             aug = mask_one_aug()
             if i > len(aug):
                 aug = aug[(i%len(aug))]       
@@ -337,6 +343,7 @@ def main():
             aug_image = augmented['image']
             aug_boxes = augmented['bboxes']
 
+            # 将标签数据标准为 [[xmin,ymin,xmax,ymax,labels]]
             coords = list()
             for box in aug_boxes:
                 coords.append([box[0],box[1],box[2]+box[0],box[3]+box[1], box[4]])

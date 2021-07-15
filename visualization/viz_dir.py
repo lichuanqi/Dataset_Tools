@@ -24,11 +24,16 @@ def show_all(jpg_dir, masks_dir):
     jpgs, masks = get_filename(jpg_dir, masks_dir)
     current, key = 0, ord('a')
 
+    print('======================== Start ========================')
+    print('jpgs path  : {}'.format(jpg_dir))
+    print('jpgs num   : {}'.format(len(jpgs)))
+    print('jpgs names : {}'.format(jpgs))
+
     while key > ord(' '):
         
         name_temp = jpgs[current].split('.')[0]
-        jpg_temp = os.path.join(jpg_dir,name_temp+'.jpg')
-        mask_temp = os.path.join(masks_dir,name_temp+'.png')
+        jpg_temp = os.path.join(jpg_dir, '{}.jpg'.format(name_temp))
+        mask_temp = os.path.join(masks_dir, '{}{}.png'.format(name_temp,name_post))
 
         jpg = cv2.imread(jpg_temp)
         mask = cv2.imread(mask_temp, 0)
@@ -58,12 +63,19 @@ def show_all(jpg_dir, masks_dir):
 if __name__=='__main__':
 
     # 测试路径
-    # jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_jpgs'
-    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Segmentation_Dataset_Tools/dataset/aug_masks'
-    
+    jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs'
+    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks'
+    name_post = ''
+
     # RailGuard
-    jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs'
-    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_ masks'
- 
+    # jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs'
+    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_ masks'
+    # name_post = ''
+
+    # output
+    # jpg_dir   = '/media/lcq/Data/modle_and_code/python_cnn/Keras-Semantic-Segmentation/data/RailGuard/test/'
+    # masks_dir = '/media/lcq/Data/modle_and_code/python_cnn/Keras-Semantic-Segmentation/data/RailGuard/output-0709/'
+    # name_post = '_unet'
+    
     show_all(jpg_dir, masks_dir)
 
