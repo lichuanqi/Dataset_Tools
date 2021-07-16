@@ -13,3 +13,4 @@ dataset/*/
 *.png
 *.csv
 *.xml
+*.txt
