@@ -63,14 +63,14 @@ def show_all(jpg_dir, masks_dir):
 if __name__=='__main__':
 
     # 测试路径
-    jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs'
-    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks'
-    name_post = ''
+    # jpg_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs'
+    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks'
+    # name_post = ''
 
     # RailGuard
-    # jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_jpgs'
-    # masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard200/aug_ masks'
-    # name_post = ''
+    jpg_dir   = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/jpgs'
+    masks_dir = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/masks'
+    name_post = ''
 
     # output
     # jpg_dir   = '/media/lcq/Data/modle_and_code/python_cnn/Keras-Semantic-Segmentation/data/RailGuard/test/'

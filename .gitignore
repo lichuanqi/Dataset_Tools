@@ -6,7 +6,7 @@ __pycache__/
 .vscode/
 
 # path
-dataset/*/
+dataset/*
 
 # file
 *.jpg
@@ -14,3 +14,4 @@ dataset/*/
 *.csv
 *.xml
 *.txt
+*.json

@@ -8,63 +8,88 @@
 
 import os
 import random
+
 import shutil
+from tqdm import tqdm
+
+def mk_if_not_exists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    return True
+    
+
+# 划分比例
+train, val, test = 0.8, 0.15, 0.05
+
+# 数据集路径 - 测试
+# jpgs_path = 'dataset/jpgs'
+# masks_path = 'dataset/masks'
+
+jpgs_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/jpgs'
+masks_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/masks'
+
+# 保存路径
+save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
+# save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
+
+train_image_path = os.path.join(save_path, 'train_image')
+train_label_path = os.path.join(save_path, 'train_label')
+val_image_path   = os.path.join(save_path, 'val_image')
+val_label_path   = os.path.join(save_path, 'val_label')
+test_image_path  = os.path.join(save_path, 'test_image')
+test_label_path  = os.path.join(save_path, 'test_label')
+
+images = os.listdir(jpgs_path)
+
+num  = len(images)
+alpha  = int( num  * train )
+beta   = int( num  * (train+val) )
+
+# 随机排序
+random.shuffle(images)
  
-# 数据集路径
-dataset_path = 'D:/camvid/camvid'
-images_path = 'D:/camvid/camvid/images'
-labels_path   = 'D:/camvid/camvid/labels'
- 
-images_name = os.listdir(images_path)
-images_num  = len(images_name)
-alpha  = int( images_num  * 0.7 )
-beta   = int( images_num  * 0.9 )
- 
-print(images_num)
- 
-random.shuffle(images_name)
- 
-train_list = images_name[0:alpha]
-valid_list = images_name[alpha:beta]
-test_list  = images_name[beta:images_num]
+train_list = images[0:alpha]
+valid_list = images[alpha:beta]
+test_list  = images[beta:num]
  
 # 确认分割正确
+print('====================== info ======================')
+print('total num : ',len(test_list)+len(valid_list)+len(train_list))
 print('train list: ',len(train_list))
 print('valid list: ',len(valid_list))
-print('test list: ',len(test_list))
-print('total num: ',len(test_list)+len(valid_list)+len(train_list))
+print('test list : ',len(test_list))
+
+# 储存文件夹不存在时新建
+mk_if_not_exists(train_image_path)
+mk_if_not_exists(train_label_path)
+mk_if_not_exists(val_image_path)
+mk_if_not_exists(val_label_path)
+mk_if_not_exists(test_image_path)
+mk_if_not_exists(test_label_path)
+
+# 复制到指定路径
+print('====================== Copy ======================')
+
+for image in tqdm(train_list):
+    name = image.split('.')[0]
+    shutil.copy(os.path.join(jpgs_path,image), 
+                os.path.join(train_image_path,image))
+    shutil.copy(os.path.join(masks_path,name+'.png'), 
+                os.path.join(train_label_path,name+'.png'))
  
-# 创建train,valid和test的文件夹
-train_images_path = os.path.join(dataset_path,'train_images')
-train_labels_path  = os.path.join(dataset_path,'train_labels')
-if os.path.exists(train_images_path)==False:
-    os.mkdir(train_images_path )
-if os.path.exists(train_labels_path)==False:
-    os.mkdir(train_labels_path)
- 
-valid_images_path = os.path.join(dataset_path,'valid_images')
-valid_labels_path  = os.path.join(dataset_path,'valid_labels')
-if os.path.exists(valid_images_path)==False:
-    os.mkdir(valid_images_path )
-if os.path.exists(valid_labels_path)==False:
-    os.mkdir(valid_labels_path)
- 
-test_images_path = os.path.join(dataset_path,'test_images')
-test_labels_path  = os.path.join(dataset_path,'test_labels')
-if os.path.exists(test_images_path)==False:
-    os.mkdir(test_images_path )
-if os.path.exists(test_labels_path)==False:
-    os.mkdir(test_labels_path)
- 
-# 拷贝影像到指定目录
-for image in train_list:
-    shutil.copy(os.path.join(images_path,image), os.path.join(train_images_path,image))
-    shutil.copy(os.path.join(labels_path,image), os.path.join(train_labels_path,image))
- 
-for image in valid_list:
-    shutil.copy(os.path.join(images_path,image), os.path.join(valid_images_path,image))
-    shutil.copy(os.path.join(labels_path,image), os.path.join(valid_labels_path,image))
- 
-for image in test_list:
-    shutil.copy(os.path.join(images_path,image), os.path.join(test_images_path,image))
-    shutil.copy(os.path.join(labels_path,image), os.path.join(test_labels_path,image))
+for image in tqdm(valid_list):
+    name = image.split('.')[0]
+    shutil.copy(os.path.join(jpgs_path,image), 
+                os.path.join(val_image_path,image))
+    shutil.copy(os.path.join(masks_path,name+'.png'), 
+                os.path.join(val_label_path,name+'.png'))
+
+for image in tqdm(test_list):
+    name = image.split('.')[0]
+    shutil.copy(os.path.join(jpgs_path,image), 
+                os.path.join(test_image_path,image))
+    shutil.copy(os.path.join(masks_path,name+'.png'), 
+                os.path.join(test_label_path,name+'.png'))
+
+print('====================== End ======================')
