@@ -22,6 +22,7 @@
 │   ├── masks
 │   └── viz
 ├── json_to_dataset.py         # LabelMe标注文件转成掩码图片
+├── xml2yolo.py                # LabelImg 标注的 xml 数据转化为 YOLO 所用的 TXT 数据
 ├── rename.py                  # 文件重命名
 ├── split.py                   # 数据集按比例分割为训练集、验证集、测试集
 ├── railSampleAnalysis.py      # 样本库分析
