@@ -31,7 +31,6 @@ masks_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/masks'
 
 # 保存路径
 save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
-# save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
 
 train_image_path = os.path.join(save_path, 'train_image')
 train_label_path = os.path.join(save_path, 'train_label')
@@ -39,6 +38,14 @@ val_image_path   = os.path.join(save_path, 'val_image')
 val_label_path   = os.path.join(save_path, 'val_label')
 test_image_path  = os.path.join(save_path, 'test_image')
 test_label_path  = os.path.join(save_path, 'test_label')
+
+# 储存文件夹不存在时新建
+mk_if_not_exists(train_image_path)
+mk_if_not_exists(train_label_path)
+mk_if_not_exists(val_image_path)
+mk_if_not_exists(val_label_path)
+mk_if_not_exists(test_image_path)
+mk_if_not_exists(test_label_path)
 
 images = os.listdir(jpgs_path)
 
@@ -59,14 +66,6 @@ print('total num : ',len(test_list)+len(valid_list)+len(train_list))
 print('train list: ',len(train_list))
 print('valid list: ',len(valid_list))
 print('test list : ',len(test_list))
-
-# 储存文件夹不存在时新建
-mk_if_not_exists(train_image_path)
-mk_if_not_exists(train_label_path)
-mk_if_not_exists(val_image_path)
-mk_if_not_exists(val_label_path)
-mk_if_not_exists(test_image_path)
-mk_if_not_exists(test_label_path)
 
 # 复制到指定路径
 print('====================== Copy ======================')

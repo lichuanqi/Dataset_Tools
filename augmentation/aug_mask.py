@@ -111,10 +111,11 @@ def mask_one_aug():
             Flip(p=1)],p=1),
         
         CoarseDropout(p=1.0, max_holes=50, max_height=50, max_width=50, min_holes=10, min_height=20, min_width=10),
-        Downscale(p=1.0, scale_min=0.25, scale_max=0.25),
-        Rotate(p=1.0, limit=(-50, 50)),
-        ShiftScaleRotate(p=1.0, shift_limit=(-0.1, 0.1), scale_limit=(-0.6, 0.6), rotate_limit=(-20, 20)),
-        ShiftScaleRotate(p=1.0, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20)),
+        Rotate(p=1.0, limit=(-50, 50), interpolation=0, border_mode=0, value=(0, 0, 0)),
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.1, 0.1), scale_limit=(-0.6, 0.6), rotate_limit=(-20, 20),
+                         interpolation=0, border_mode=0),
+        ShiftScaleRotate(p=1.0, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20),
+                         interpolation=0, border_mode=0),
         ]
 
     return aug
@@ -123,18 +124,18 @@ def mask_one_aug():
 def main():
 
     # 测试
-    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
-    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/masks/')  # 输入 mask 地址
-    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
-    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
+    train_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/jpgs/')  # 输入 img 地址
+    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/masks/')  # 输入 mask 地址
+    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_jpgs/')  # 输入增强img存放地址
+    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/aug_masks/')  # 输入增强mask存放地址
     
     # RailGuard
-    train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/train_image/')  # 输入 img 地址
-    mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/train_label')  # 输入 mask 地址
-    augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/aug_train_image/')  # 输入增强img存放地址
-    augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/aug_train_label/')  # 输入增强mask存放地址
+    # train_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/train_image/')  # 输入 img 地址
+    # mask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/train_label')  # 输入 mask 地址
+    # augtrain_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/aug_train_image/')  # 输入增强img存放地址
+    # augmask_path = ('/media/lcq/Data/modle_and_code/DataSet/RailGuard/train/aug_train_label/')  # 输入增强mask存放地址
 
-    num = 9  # 输入增强图像增强的张数。
+    num = 8  # 输入增强图像增强的张数。
 
     train_img, masks = data_num(train_path, mask_path)
     # print(train_img)
@@ -145,7 +146,7 @@ def main():
     if not os.path.exists(augmask_path):
         os.mkdir(augmask_path)
 
-    print('================ Start ================')
+    print('{:=^50}'.format(' Start '))
     print('Aotal File Number   : {}'.format(len(train_img)))
     print('Augmentation Number : {}'.format(num))
 
@@ -175,7 +176,7 @@ def main():
             # 每次只使用一种变换,当扩增数量大于方法数量时从头开始
             aug = mask_one_aug()
             if i > len(aug):
-                aug = aug[(i%len(aug))]       
+                aug = aug[(i%len(aug))]
             else:
                 aug = aug[i]
 
@@ -189,7 +190,7 @@ def main():
 
         print('{}/{}: {} Saved'.format(data+1,len(train_img),image_name))
     
-    print('================  End  ================')
+    print('{:=^50}'.format(' End '))
 
 
 if __name__ == "__main__":
