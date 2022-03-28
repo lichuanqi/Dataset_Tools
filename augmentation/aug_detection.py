@@ -241,12 +241,12 @@ def mask_one_aug():
     功能：
         一次只使用一种扩增方式 
     '''
-    bbox_params = BboxParams(format='coco', min_area=50, min_visibility=0.7)
+    bbox_params = BboxParams(format='coco', min_area=20, min_visibility=0.7)
     
     aug = [Compose(transforms=[OneOf([
-            RandomGamma(gamma_limit=(80, 120), p=1),
-            RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=1),
-            CLAHE(clip_limit=4.0, tile_grid_size=(4, 4), p=1),],
+            RandomGamma(gamma_limit=(60, 200), p=0.5),
+            RandomBrightnessContrast(brightness_limit=0.5, contrast_limit=0.5, p=0.5),
+            CLAHE(clip_limit=6.0, tile_grid_size=(8, 8), p=0.5),],
             p=1)],bbox_params=bbox_params),
         
         Compose(transforms=[OneOf([
@@ -274,18 +274,24 @@ def mask_one_aug():
             bbox_params=bbox_params),
         
         Compose(transforms=[
-            ShiftScaleRotate(p=1, shift_limit=(-0.05, 0.05), scale_limit=(-0.5, 0.5), rotate_limit=(-20, 20))],
-            bbox_params=bbox_params),
+            ShiftScaleRotate(p=1, shift_limit=(-0.05, 0.05), scale_limit=(-0.5, 0.5), rotate_limit=(-20, 20),
+            interpolation=0, border_mode=0)],bbox_params=bbox_params),
         
         Compose(transforms=[
-            ShiftScaleRotate(p=1, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20))],
-            bbox_params=bbox_params)
+            ShiftScaleRotate(p=1, shift_limit=(-0.25, 0.25), scale_limit=(-0.1, 0.1), rotate_limit=(-20, 20),
+            interpolation=0, border_mode=0)],bbox_params=bbox_params)
         ]
 
     return aug
 
 
 def main():
+
+    # 毕业论文
+    img_path = ('D:/Code/DATASET/Rail2/test/bjtu_images/')        # 要扩增的 jpg 路径
+    xml_path = ('D:/Code/DATASET/Rail2/test/bjtu_xmls/')          # 要扩增的 xml 路径
+    aug_img_path = ('D:/Code/DATASET/Rail2/test/bjtu_images_aug/')  # 扩增后的 jpg 路径
+    aug_xml_path = ('D:/Code/DATASET/Rail2/test/bjtu_xmls_aug/')  # 扩增后的 xml 路径
 
     # 测试
     # img_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/anno/')         # 要扩增的 jpg 路径
@@ -294,10 +300,10 @@ def main():
     # aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/Dataset_Tools/dataset/detection/aug_xml/')  # 扩增后的 xml 路径
     
     # ICIG
-    img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/images/')
-    xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/annotations/')
-    aug_img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/aug_images/')
-    aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/augf_annotations/')
+    # img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/images/')
+    # xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/annotations/')
+    # aug_img_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/aug_images/')
+    # aug_xml_path = ('/media/lcq/Data/modle_and_code/DataSet/ICIG2021/train/augf_annotations/')
 
     # 图像增强数量
     num = 8
@@ -305,6 +311,12 @@ def main():
     # 读取指定文件夹内的文件路径
     imgs, xmls = data_num(img_path, xml_path)
 
+    # 判断保存文件夹是否存在
+    if not os.path.exists(aug_img_path):
+        os.mkdir(aug_img_path)
+    if not os.path.exists(aug_xml_path):
+        os.mkdir(aug_xml_path)
+    
     start_time = time.time()
     print('================ Start ================')
     print('Aotal File Number   : {}'.format(len(imgs)))

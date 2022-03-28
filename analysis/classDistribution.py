@@ -9,8 +9,10 @@
 
 import os
 import xml.etree.ElementTree as ET
-import numpy as np
 import sys
+import time
+
+import numpy as np
 np.set_printoptions(threshold=sys.maxsize)
 # np.set_printoptions(suppress=True, threshold=np.nan)
 import matplotlib
@@ -37,17 +39,22 @@ def read_image(image_path, filename):
 
 
 if __name__ == '__main__':
-    xml_path = 'Annotations/'
+
+    xml_path = 'D:/Code/DATASET/RailSample/xmls/'
+    
     filenamess = os.listdir(xml_path)
     filenames = []
+    
     for name in filenamess:
         name = name.replace('.xml', '')
         filenames.append(name)
+    
     recs = {}
     obs_shape = {}
     classnames = []
     num_objs = {}
     obj_avg = {}
+    
     for i, name in enumerate(filenames):
         recs[name] = parse_obj(xml_path, name + '.xml')
     for name in filenames:
@@ -58,7 +65,10 @@ if __name__ == '__main__':
                 num_objs[object['name']] += 1
             if object['name'] not in classnames:
                 classnames.append(object['name'])
+    
     for name in classnames:
         print('{}:{}个'.format(name, num_objs[name]))
+    
     print('信息统计算完毕。')
+    time.sleep(100)
 

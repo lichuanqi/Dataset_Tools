@@ -2,9 +2,15 @@
 # 根据 xml 标签文件求先验框
 # 参考：
 
+from contextlib import redirect_stderr
 import os
-import numpy as np
+import re
+from tkinter import W
 import xml.etree.cElementTree as et
+
+from cv2 import ROTATE_90_COUNTERCLOCKWISE
+import numpy as np
+from matplotlib import pyplot as plt 
 
 
 def iou(box, clusters):
@@ -69,13 +75,18 @@ def kmeans(boxes, k, dist=np.median):
 
 
 def load_data_from_xml(anno_dir, class_names):
+
     xml_names = os.listdir(anno_dir)
     boxes = []
+
     for xml_name in xml_names:
+
         xml_pth = os.path.join(anno_dir, xml_name)
         tree = et.parse(xml_pth)
+
         width = float(tree.findtext("./size/width"))
         height = float(tree.findtext("./size/height"))
+        
         for obj in tree.findall("./object"):
             cls_name = obj.findtext("name")
             if cls_name in class_names:
@@ -87,17 +98,80 @@ def load_data_from_xml(anno_dir, class_names):
                 boxes.append(box)
             else:
                 continue
+
     return np.array(boxes)
 
 
-if __name__ == '__main__':
+def load_wh_from_xml(anno_dir, class_names):
+    """
+    从 xml 文件中读取目标框的 宽度w 和 高度h
+    """
 
-    # 设置参数
-    ANNOTATION_PATH = 'D:/Code/DATASET/5151/validation/xml/'           # 数据集标签文件夹路径
-    ANCHORS_TXT_PATH = "D:/Code/DATASET/5151/validation/anchors.txt"   # anchors文件保存位置
+    xml_names = os.listdir(anno_dir)
+    boxes = []
+
+    for xml_name in xml_names:
+
+        xml_pth = os.path.join(anno_dir, xml_name)
+        tree = et.parse(xml_pth)
+
+        width = float(tree.findtext("./size/width"))
+        height = float(tree.findtext("./size/height"))
+        
+        for obj in tree.findall("./object"):
+            cls_name = obj.findtext("name")
+            if cls_name in class_names:
+                xmin = int(obj.findtext("bndbox/xmin"))
+                ymin = int(obj.findtext("bndbox/ymin"))
+                xmax = int(obj.findtext("bndbox/xmax")) 
+                ymax = int(obj.findtext("bndbox/ymax"))
+                box = [xmax - xmin, ymax - ymin]
+                boxes.append(box)
+            else:
+                continue
+
+    return np.array(boxes)
+
+
+def scatter_by_wh(ANNOTATION_PATH,                        # 数据集xml标签文件夹路径
+                  IS_SAVE=False,
+                  CLASS_NAMES=['person','train'] ):
+    """
+    根据目标框的宽度和高度绘制散点图
+    """
+
+    ancnhors_x = [3, 4, 6, 9, 13, 18, 32, 57, 98]
+    ancnhors_y = [13, 21, 30, 37, 56, 85, 143, 57, 292]
+
+    train_boxes = load_wh_from_xml(ANNOTATION_PATH, CLASS_NAMES)
     
-    CLUSTERS = 2
-    CLASS_NAMES = ['person','train']   #类别名称
+    w = []
+    h = []
+
+    for i in train_boxes:
+        w.append(i[0])
+        h.append(i[1])
+
+    plt.figure()
+    # 矩形框
+    plt.scatter(w,h,alpha=0.6)
+    # anchors
+    plt.scatter(ancnhors_x,ancnhors_y,c='r',marker='s')
+    plt.xlabel('Width')
+    plt.xlabel('Height')
+    plt.xlim(-10,1920)
+    plt.ylim(-10,1080)
+    plt.minorticks_on()
+    # plt.savefig('D:/论文/论文3-毕业论文/图片/图 37-目标框散点图.jpg',dpi=300, bbox_inches='tight')
+    plt.show()
+
+    return True
+
+
+def get_anchors_by_kmeans(ANNOTATION_PATH,                        # 数据集xml标签文件夹路径
+                          ANCHORS_TXT_PATH,                       # anchors.txt 文件保存位置
+                          CLUSTERS = 9,                           # anchors数量
+                          CLASS_NAMES = ['person','train'] ):     # 指定目标类别
 
     anchors_txt = open(ANCHORS_TXT_PATH, "w")
     train_boxes = load_data_from_xml(ANNOTATION_PATH, CLASS_NAMES)
@@ -132,7 +206,28 @@ if __name__ == '__main__':
             best_anchors = anchors_tmp
             best_ratios = ratios
 
-    anchors_txt.write("Best Accuracy = " + str(round(best_accuracy, 2)) + '%' + "\n")
-    anchors_txt.write("Best Anchors = " + str(best_anchors) + "\n")
+    anchors_txt.write("Best Accuracy = " + str(round(best_accuracy, 2)) + '%' + "/n")
+    anchors_txt.write("Best Anchors = " + str(best_anchors) + "/n")
     anchors_txt.write("Best Ratios = " + str(best_ratios))
     anchors_txt.close()
+
+
+if __name__ == '__main__':
+
+    # 设置参数
+    ANNOTATION_PATH = 'D:/Code/DATASET/RailSample/xmls/'           # 数据集标签文件夹路径
+    ANCHORS_TXT_PATH = "D:/Code/DATASET/RailSample/anchors.txt"   # anchors文件保存位置
+    
+    CLUSTERS = 9
+    CLASS_NAMES = ['person','train']   #类别名称
+
+    scatter_by_wh(ANNOTATION_PATH,
+                  CLASS_NAMES)
+
+    # 计算 anchors
+    # get_anchors_by_kmeans(ANNOTATION_PATH,
+    #                       ANCHORS_TXT_PATH,
+    #                       CLUSTERS,
+    #                       CLASS_NAMES)
+
+   
