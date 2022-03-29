@@ -1,7 +1,9 @@
 #==========================================================
-# 功能：将原始数据集按照一定的比例分割成train:valid:test
-# LICHUAN
-# lc@dlc618.com
+# 功能：
+# 		将原始数据集按照一定的比例分割成 train:valid:test
+#		分割好的数据复制到指定的文件夹
+#		根据文件名和路径生成图片列表 train.txt  （未实现）
+# LICHUAN，lc@dlc618.com
 # 参考：https://www.freesion.com/article/4723305868/
 #==========================================================
 
@@ -13,11 +15,11 @@ import shutil
 from tqdm import tqdm
 
 def mk_if_not_exists(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+	if not os.path.exists(path):
+		os.makedirs(path)
 
-    return True
-    
+	return True
+	
 
 # 划分比例
 train, val, test = 0.8, 0.15, 0.05
@@ -71,24 +73,24 @@ print('test list : ',len(test_list))
 print('====================== Copy ======================')
 
 for image in tqdm(train_list):
-    name = image.split('.')[0]
-    shutil.copy(os.path.join(jpgs_path,image), 
-                os.path.join(train_image_path,image))
-    shutil.copy(os.path.join(masks_path,name+'.png'), 
-                os.path.join(train_label_path,name+'.png'))
+	name = image.split('.')[0]
+	shutil.copy(os.path.join(jpgs_path,image), 
+				os.path.join(train_image_path,image))
+	shutil.copy(os.path.join(masks_path,name+'.png'), 
+				os.path.join(train_label_path,name+'.png'))
  
 for image in tqdm(valid_list):
-    name = image.split('.')[0]
-    shutil.copy(os.path.join(jpgs_path,image), 
-                os.path.join(val_image_path,image))
-    shutil.copy(os.path.join(masks_path,name+'.png'), 
-                os.path.join(val_label_path,name+'.png'))
+	name = image.split('.')[0]
+	shutil.copy(os.path.join(jpgs_path,image), 
+				os.path.join(val_image_path,image))
+	shutil.copy(os.path.join(masks_path,name+'.png'), 
+				os.path.join(val_label_path,name+'.png'))
 
 for image in tqdm(test_list):
-    name = image.split('.')[0]
-    shutil.copy(os.path.join(jpgs_path,image), 
-                os.path.join(test_image_path,image))
-    shutil.copy(os.path.join(masks_path,name+'.png'), 
-                os.path.join(test_label_path,name+'.png'))
+	name = image.split('.')[0]
+	shutil.copy(os.path.join(jpgs_path,image), 
+				os.path.join(test_image_path,image))
+	shutil.copy(os.path.join(masks_path,name+'.png'), 
+				os.path.join(test_label_path,name+'.png'))
 
 print('====================== End ======================')

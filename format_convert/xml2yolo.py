@@ -67,9 +67,9 @@ def xml_txt(txt_path,
 					
 					print('--From:',xmin,ymin,xmax,ymax)
 					print('--To  :',center_x,center_y,bbox_width,bbox_height)
-                    
-                    # 传入信息，txt是字符串形式
-					line += '{} {} {} {} {}'.format(label,center_x,center_y,bbox_width,bbox_height) + '\n'              
+					
+					# 传入信息，txt是字符串形式
+					line += '{} {} {} {} {}'.format(label,center_x,center_y,bbox_width,bbox_height) + '/n'              
 			
 			# 将txt信息写入文件
 			with open(ftxt_path, 'w') as f_txt:
@@ -78,19 +78,22 @@ def xml_txt(txt_path,
 
 if __name__ == '__main__':
 
-    # 存放图片的文件目录
-    image_path = '/media/lcq/Data/modle_and_code/DataSet/ICIG2021/test/images'
-    # 存放xml的文件目录
-    xml_path = '/media/lcq/Data/modle_and_code/DataSet/ICIG2021/test/xml'
-    # yolo存放生成txt的文件目录
-    txt_path = '/media/lcq/Data/modle_and_code/DataSet/ICIG2021/test/xml_test'
+	# 存放图片的文件目录
+	image_path = 'D:/Code/DATASET/RailSample/images'
+	# 存放xml的文件目录
+	xml_path = 'D:/Code/DATASET/RailSample/xmls'
+	# yolo存放生成txt的文件目录
+	txt_path = 'D:/Code/DATASET/RailSample/txt'
 
 	# 标签
-    labels = [ 'pinA_normal', 'screw_normal', 'pinB_miss',
-         'puller_normal', 'pinB_normal', 'pinD_latent',
-         'pinD_normal', 'puller_miss', 'pinC_normal',
-         'nut', 'screw_miss', 'pinA_miss',
-         'pinD_miss', 'nut_normal', 'pinA_latent',
-         'pinB_latent', 'pinC_miss', 'pinC_latent' ]
+	labels_railsample = ['person', 'bicycle', 'car', 'motorbike', 'tricycle', 'train', 'truck',
+				   'forklift', 'bus', 'bag', 'dog', 'box', 'stone', 'light']
 
-    xml_txt(txt_path, image_path, xml_path, labels)
+	labels_icig = [ 'pinA_normal', 'screw_normal', 'pinB_miss',
+					'puller_normal', 'pinB_normal', 'pinD_latent',
+					'pinD_normal', 'puller_miss', 'pinC_normal',
+					'nut', 'screw_miss', 'pinA_miss',
+					'pinD_miss', 'nut_normal', 'pinA_latent',
+					'pinB_latent', 'pinC_miss', 'pinC_latent' ]
+
+	xml_txt(txt_path, image_path, xml_path, labels_railsample)
