@@ -29,6 +29,8 @@ def iou(box, clusters):
     cluster_area = clusters[:, 0] * clusters[:, 1]
     iou_ = intersection / (box_area + cluster_area - intersection)
     return iou_
+
+
 def avg_iou(boxes, clusters):
     """
     Calculates the average Intersection over Union (IoU) between a numpy array of boxes and k clusters.
@@ -37,6 +39,8 @@ def avg_iou(boxes, clusters):
     :return: average IoU as a single float
     """
     return np.mean([np.max(iou(boxes[i], clusters)) for i in range(boxes.shape[0])])
+
+
 def translate_boxes(boxes):
     """
     Translates all the boxes to the origin.
@@ -46,8 +50,10 @@ def translate_boxes(boxes):
     new_boxes = boxes.copy()
     for row in range(new_boxes.shape[0]):
         new_boxes[row][2] = np.abs(new_boxes[row][2] - new_boxes[row][0])
-        new_boxes[row][3] = np.abs(new_boxes[row][3] - new_boxes[row][1])
+        new_boxes[row][2] = np.abs(new_boxes[row][2] - new_boxes[row][1])
     return np.delete(new_boxes, [0, 1], axis=1)
+
+    
 def kmeans(boxes, k, dist=np.median):
     """
     Calculates k-means clustering with the Intersection over Union (IoU) metric.
@@ -140,8 +146,8 @@ def scatter_by_wh(ANNOTATION_PATH,                        # 数据集xml标签�
     根据目标框的宽度和高度绘制散点图
     """
 
-    ancnhors_x = [3, 4, 6, 9, 13, 18, 32, 57, 98]
-    ancnhors_y = [13, 21, 30, 37, 56, 85, 143, 57, 292]
+    ancnhors_x = [2, 4, 6, 9, 12, 18, 22, 57, 98]
+    ancnhors_y = [12, 21, 20, 27, 56, 85, 142, 57, 292]
 
     train_boxes = load_wh_from_xml(ANNOTATION_PATH, CLASS_NAMES)
     
@@ -162,7 +168,7 @@ def scatter_by_wh(ANNOTATION_PATH,                        # 数据集xml标签�
     plt.xlim(-10,1920)
     plt.ylim(-10,1080)
     plt.minorticks_on()
-    # plt.savefig('D:/论文/论文3-毕业论文/图片/图 37-目标框散点图.jpg',dpi=300, bbox_inches='tight')
+    # plt.savefig('D:/论文/论文2-毕业论文/图片/图 27-目标框散点图.jpg',dpi=200, bbox_inches='tight')
     plt.show()
 
     return True
@@ -212,6 +218,36 @@ def get_anchors_by_kmeans(ANNOTATION_PATH,                        # 数据集xml
     anchors_txt.close()
 
 
+def plt_anchors(anchors):
+    """
+    根据先验框的 wh 绘制土图片 
+    """
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.axis([-200,200, -200,200])
+
+    anchors = np.array(anchors)
+    colors = ['r','r','r', 'g','g','g', 'b','b','b']
+
+    for i in range(len(anchors)):
+        w, h = anchors[i][0], anchors[i][1]
+        col = colors[i]
+
+        # 根据矩形框的 wh 计算左上角坐标和右下角坐标
+        # x1, y1 = -w/2,  h/2
+        # x2, y2 =  w/2, -h/2
+
+        # 根据矩形框的 wh 计算左上角坐标和右下角坐标
+        x3, y3 = -w/2, -h/2
+
+        rect = plt.Rectangle((x3,y3),w,h,fill=False,edgecolor=col)
+        ax.add_patch(rect)
+
+    plt.show()
+
+    return True
+
+
 if __name__ == '__main__':
 
     # 设置参数
@@ -221,13 +257,19 @@ if __name__ == '__main__':
     CLUSTERS = 9
     CLASS_NAMES = ['person','train']   #类别名称
 
-    scatter_by_wh(ANNOTATION_PATH,
-                  CLASS_NAMES)
+    # scatter_by_wh(ANNOTATION_PATH,
+    #               CLASS_NAMES)
 
     # 计算 anchors
     # get_anchors_by_kmeans(ANNOTATION_PATH,
     #                       ANCHORS_TXT_PATH,
     #                       CLUSTERS,
     #                       CLASS_NAMES)
+
+    # anchors = [[2.67, 12.04], [4.22, 21.22], [7.0, 20.81], [10.0, 46.81], [15.67, 62.41], [21.0, 105.48], [25.0, 155.26], [57.22, 56.2], [105.22, 299.85]]
+    anchors = [[4,10], [7,19], [20,14], [14,37], [47,19], [26,72], [75,41], [79,168], [345,173]]
+
+    print(anchors)
+    plt_anchors(anchors)
 
    
