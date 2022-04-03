@@ -46,12 +46,15 @@ def txt_write(path, images_list, txt_name):
 # masks_path = 'dataset/masks'
 
 # RailGuard数据集
-jpgs_path = 'D:/Code/DATASET/RailSample/images'
-masks_path = 'D:/Code/DATASET/RailSample/txt'
-pre_path = '/data/home/u19120834/DATASET/RailSample/images'
+# jpgs_path = 'D:/Code/DATASET/RailSample/images'
+# masks_path = 'D:/Code/DATASET/RailSample/txt'
+jpgs_path = 'D:/Code/DATASET/RailSample/test/images'
+masks_path = 'D:/Code/DATASET/RailSample/test/labels'
+# pre_path = '/data/home/u19120834/DATASET/RailSample/images'
+pre_path = '/media/vv/50B0275AB02745B6/lichuan/dataset/Railsample/images'    # 实验室GPU路径
 
 # 划分比例
-train, val, test = 0.0125, 0.00250, 0.00125
+train, val, test = 0, 0, 1
 
 # 保存参数
 is_copy = False        # 将分割好的数据集全部图片和标注复制到指定路径下
@@ -87,7 +90,10 @@ beta   = int( num  * (train+val) )
 gamma  = int( num  * (train+val+test) )
 
 # 随机排序
-random.shuffle(images_list)
+# random.shuffle(images_list)
+# 按照顺序排序
+images_list.sort(key=lambda x:int(x.split('.')[0]))
+
  
 train_list = images_list[0:alpha]
 valid_list = images_list[alpha:beta]
@@ -122,21 +128,21 @@ if is_copy == True:
 
 	print('====================== Copy Start======================')
 
-	for image in tqdm(train_list):
+	for image in tqdm(train_list,desc='Train List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(train_image_path,image))
 		shutil.copy(os.path.join(masks_path,name+'.png'), 
 					os.path.join(train_label_path,name+'.png'))
 	
-	for image in tqdm(valid_list):
+	for image in tqdm(valid_list,desc='Val List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(val_image_path,image))
 		shutil.copy(os.path.join(masks_path,name+'.png'), 
 					os.path.join(val_label_path,name+'.png'))
 
-	for image in tqdm(test_list):
+	for image in tqdm(test_list,desc='Test List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(test_image_path,image))

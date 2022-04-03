@@ -5,10 +5,13 @@
 # 2021.7.20
 #==============================================
 
+from cProfile import label
 import time
 import cv2
 import os
 import xml.etree.ElementTree as ET
+
+from dataset_names import get_coco_names, get_icig_names, get_rail14_names, get_rail2_names
 
 
 def xml_txt(txt_path,     
@@ -89,11 +92,11 @@ def xml_txt(txt_path,
 if __name__ == '__main__':
 
 	# 存放图片的文件目录
-	image_path = 'D:/Code/DATASET/RailSample/images'
+	image_path = 'D:/Code/DATASET/RailSample/test/images'
 	# 存放xml的文件目录
 	xml_path = 'D:/Code/DATASET/RailSample/xmls'
 	# yolo存放生成txt的文件目录
-	txt_path = 'D:/Code/DATASET/RailSample/txts_2'
+	txt_path = 'D:/Code/DATASET/RailSample/test/txt_rail14'
 
 	# 测试
 	# image_path = 'dataset/jpgs'
@@ -102,20 +105,12 @@ if __name__ == '__main__':
 	# labels = ['person', 'train']
 
 	# 标签
-	
-	labels_railsample_2 = ['person', 'train']
-	
-	labels_railsample = ['person', 'bicycle', 'car', 'motorbike', 'tricycle', 'train', 'truck',
-				   'forklift', 'bus', 'bag', 'dog', 'box', 'stone', 'light']
+	labels_rail2 = get_rail2_names()
+	labels_rail14 =get_rail14_names()
+	labels_coco = get_coco_names()
+	labels_icig = get_icig_names()
 
-	labels_icig = [ 'pinA_normal', 'screw_normal', 'pinB_miss',
-					'puller_normal', 'pinB_normal', 'pinD_latent',
-					'pinD_normal', 'puller_miss', 'pinC_normal',
-					'nut', 'screw_miss', 'pinA_miss',
-					'pinD_miss', 'nut_normal', 'pinA_latent',
-					'pinB_latent', 'pinC_miss', 'pinC_latent' ]
-
-	xml_txt(txt_path, image_path, xml_path, labels_railsample_2)
+	xml_txt(txt_path, image_path, xml_path, labels_rail14)
 
 	print('Over')
 	time.sleep(50)
