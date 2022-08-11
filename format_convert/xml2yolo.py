@@ -36,6 +36,8 @@ def xml_txt(txt_path,
 			# xml文件路径
 			xml_path = os.path.join(path, fxml)
 			# txt文件路径
+			if not os.path.exists(txt_path):
+				os.makedirs(txt_path)
 			ftxt_path = os.path.join(txt_path, ftxt)
 
 			# 解析xml
@@ -96,8 +98,9 @@ if __name__ == '__main__':
 	# 存放xml的文件目录
 	xml_path = 'D:/CodePost/Xray_all/xmls/'
 	# yolo存放生成txt的文件目录
-	txt_path = 'D:/CodePost/Xray_all/'
-	labels = ['Battery']
+	txt_path = 'D:/CodePost/Xray_all/txts/'
+
+	labels = ['Lighter','Pressure_vessel','Battery','Gun','Fireworks']
 
 
 

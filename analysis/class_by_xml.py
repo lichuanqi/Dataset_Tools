@@ -42,11 +42,12 @@ def read_image(image_path, filename):
 
 if __name__ == '__main__':
 
-    jpg_path = 'D:/CodePost/PIXray_300examples/jpgs/'
-    xml_path = 'D:/CodePost/PIXray_300examples/xmls/'
+    jpg_path = 'D:/CodePost/Xray_select/jpgs/'
+    xml_path = 'D:/CodePost/Xray_select/xmls/'
 
-    save_txt = True
-    save_path = 'D:/CodePost/PIXray_300examples/'
+    # 将结果保存为txt文件
+    save_txt = False
+    save_path = ''
     txt_path = save_path + 'list.txt'
     label_path = save_path + 'label.txt'
     
@@ -63,10 +64,8 @@ if __name__ == '__main__':
     print('共读取 {} 条xml数据。'.format(len(xmls)))
     
     recs = {}
-    obs_shape = {}
-    classnames = []
+    classnames = []                # 目标名称
     num_objs = {}                  # 目标名称及数量
-    obj_avg = {}
     
     # 遍历一下所有图片读取所有目标名称
     for i, name in enumerate(names):
@@ -78,6 +77,7 @@ if __name__ == '__main__':
                 num_objs[object['name']] = 1
             else:
                 num_objs[object['name']] += 1
+
             if object['name'] not in classnames:
                 classnames.append(object['name'])
     

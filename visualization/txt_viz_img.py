@@ -4,8 +4,8 @@ import os, cv2
 import numpy as np
 
 
-imgfile  = 'D:/CodePost/Xray_all/jpgs/PIXray_143345099.jpg'
-txt_file = 'D:/CodePost/Xray_all/txts/PIXray_143345099.txt'
+imgfile  = 'D:/CodePost/4code/jpgs+txts/13487.png'
+txt_file = 'D:/CodePost/4code/jpgs+txts/13487.txt'
 labels = ['Battery']
 
 font = cv2.FONT_HERSHEY_SIMPLEX
