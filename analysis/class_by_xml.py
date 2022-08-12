@@ -46,7 +46,7 @@ if __name__ == '__main__':
     xml_path = 'D:/CodePost/Xray_select/xmls/'
 
     # 将结果保存为txt文件
-    save_txt = False
+    save_txt = True
     save_path = ''
     txt_path = save_path + 'list.txt'
     label_path = save_path + 'label.txt'
