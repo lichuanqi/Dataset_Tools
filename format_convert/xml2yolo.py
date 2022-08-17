@@ -11,7 +11,8 @@ import cv2
 import os
 import xml.etree.ElementTree as ET
 
-from dataset_names import get_coco_names, get_icig_names, get_rail14_names, get_rail2_names
+from dataset_names import get_coco_names, get_icig_names, get_rail14_names, get_rail2_names, \
+						  get_xray13_names
 
 
 def xml_txt(txt_path,     
@@ -101,8 +102,6 @@ if __name__ == '__main__':
 	txt_path = 'D:/CodePost/Xray_all/txts/'
 
 	labels = ['Lighter','Pressure_vessel','Battery','Gun','Fireworks']
-
-
 
 	# 测试
 	# image_path = 'dataset/jpgs'

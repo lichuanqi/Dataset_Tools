@@ -130,6 +130,15 @@ def get_FSOD_dic():
     return dic
 
 
+def get_xray13_names():
+
+    xray13_names = ['laptop', 'portable_charger_2', 'mobile_phone', 'portable_charger_1',
+     'battery', 'pressure_tank', 'lighter', 'straight_knife', 'folding_knife',
+     'multi-tool_knife', 'utility_knife', 'Gun', 'Fireworks']
+
+    return xray13_names
+    
+
 if __name__ == '__main__':
 
     FSOD_dic = get_FSOD_dic()

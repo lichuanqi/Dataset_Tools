@@ -9,6 +9,7 @@
 
 
 import os
+import sys
 import random
 
 import shutil
@@ -45,20 +46,30 @@ def txt_write(path, images_list, txt_name):
 # jpgs_path = 'dataset/jpgs'
 # masks_path = 'dataset/masks'
 
-# RailGuard数据集
+# 数据集路径 - RailGuard数据集
 # jpgs_path = 'D:/Code/DATASET/RailSample/images'
 # masks_path = 'D:/Code/DATASET/RailSample/txt'
-jpgs_path = 'D:/Code/DATASET/RailSample/test/images'
-masks_path = 'D:/Code/DATASET/RailSample/test/labels'
+# jpgs_path = 'D:/Code/DATASET/RailSample/test/images'
+# masks_path = 'D:/Code/DATASET/RailSample/test/labels'
 # pre_path = '/data/home/u19120834/DATASET/RailSample/images'
-pre_path = '/media/vv/50B0275AB02745B6/lichuan/dataset/Railsample/images'    # 实验室GPU路径
+# pre_path = '/media/vv/50B0275AB02745B6/lichuan/dataset/Railsample/images'    # 实验室GPU路径
 
-# 划分比例
-train, val, test = 0, 0, 1
+# 数据集路径 - Xary
+jpgs_path = 'D:/CodePost/Xray_select/jpgs/'
+masks_path = 'D:/CodePost/Xray_select/xmls/'
 
-# 保存参数
-is_copy = False        # 将分割好的数据集全部图片和标注复制到指定路径下
-is_txt = True          # 生成 三个txt文件，保存所有图片名称
+save_path = 'D:/CodePost/Xray_select/'
+pre_path = ''
+train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
+val_txt_name = os.path.join(save_path, 'val.txt')
+test_txt_name = os.path.join(save_path, 'test.txt')
+
+train_image_path = os.path.join(save_path, 'train/images')      # 训练图片
+train_label_path = os.path.join(save_path, 'train/labels')      # 训练标注
+val_image_path   = os.path.join(save_path, 'val/images')
+val_label_path   = os.path.join(save_path, 'val/labels')
+test_image_path  = os.path.join(save_path, 'test/images')
+test_label_path  = os.path.join(save_path, 'test/labels')
 
 # 保存路径 - 自定义
 # save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
@@ -70,16 +81,23 @@ is_txt = True          # 生成 三个txt文件，保存所有图片名称
 # test_label_path  = os.path.join(save_path, 'test_label')
 
 # 保存路径 - YOLO V5训练用
-save_path = 'D:/Code/DATASET/RailSample'
-train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
-val_txt_name = os.path.join(save_path, 'val.txt')
-test_txt_name = os.path.join(save_path, 'test.txt')
-train_image_path = os.path.join(save_path, 'train/images')      # 训练图片
-train_label_path = os.path.join(save_path, 'train/labels')      # 训练标注
-val_image_path   = os.path.join(save_path, 'val/images')
-val_label_path   = os.path.join(save_path, 'val/labels')
-test_image_path  = os.path.join(save_path, 'test/images')
-test_label_path  = os.path.join(save_path, 'test/labels')
+# save_path = 'D:/Code/DATASET/RailSample'
+# train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
+# val_txt_name = os.path.join(save_path, 'val.txt')
+# test_txt_name = os.path.join(save_path, 'test.txt')
+# train_image_path = os.path.join(save_path, 'train/images')      # 训练图片
+# train_label_path = os.path.join(save_path, 'train/labels')      # 训练标注
+# val_image_path   = os.path.join(save_path, 'val/images')
+# val_label_path   = os.path.join(save_path, 'val/labels')
+# test_image_path  = os.path.join(save_path, 'test/images')
+# test_label_path  = os.path.join(save_path, 'test/labels')
+
+# 划分比例
+train, val, test = 0.7, 0.2, 0.1
+
+# 保存参数
+is_copy = False        # 将分割好的数据集全部图片和标注复制到指定路径下
+is_txt = True          # 生成 三个txt文件，保存所有图片名称
 
 images_list = os.listdir(jpgs_path)
 
@@ -90,16 +108,16 @@ beta   = int( num  * (train+val) )
 gamma  = int( num  * (train+val+test) )
 
 # 随机排序
-# random.shuffle(images_list)
+random.shuffle(images_list)
 # 按照顺序排序
-images_list.sort(key=lambda x:int(x.split('.')[0]))
+# images_list.sort(key=lambda x:int(x.split('.')[0]))
 
  
 train_list = images_list[0:alpha]
 valid_list = images_list[alpha:beta]
 test_list  = images_list[beta:gamma]
  
-# 确认分割正确
+# 确认划分数量
 print('====================== info ======================')
 print('Total num : ',num)
 print('Train num: ',len(train_list))
@@ -107,7 +125,7 @@ print('Valid num: ',len(valid_list))
 print('Test num : ',len(test_list))
 
 # 生成txt路径文件
-if is_txt == True:
+if is_txt:
 
 	txt_write(pre_path, train_list, train_txt_name)
 	txt_write(pre_path, valid_list,val_txt_name)
@@ -115,8 +133,10 @@ if is_txt == True:
 
 	print('TXT is saved')
 
+sys.exit()
+
 # 复制到指定路径
-if is_copy == True:
+if is_copy:
 
 	# 储存文件夹不存在时新建
 	mk_if_not_exists(train_image_path)
@@ -150,6 +170,3 @@ if is_copy == True:
 					os.path.join(test_label_path,name+'.png'))
 
 	print('====================== Copy End ======================')
-
-
-time.sleep(100)

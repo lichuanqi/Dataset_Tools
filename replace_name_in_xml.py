@@ -1,30 +1,38 @@
 # 修改xml文件中类别的名称
 # 参考: https://blog.csdn.net/qq_47733923/article/details/124712118
 
-from dataclasses import replace
+
 import os.path
 import sys
+import time
+from tracemalloc import start
 import xml.dom.minidom
 
 
 # xml文件存放路径
-# xml_path = 'C:/Users/soli/Desktop/1'
+xml_path = 'D:/CodePost/Xray_select/xmls'
 # 需删除的类名
-# delete_name = ['spray_alcohol']
+delete_name = ['spray_alcohol','metal_can','iron_shoe', 'glass_bottle','umbrella',
+               'nail_clippers','metal_cup','scissor', 'drink_bottle']
 # 需替换的类名 {'原始类别名称': '新名称'}
-# replace_name = {'Lighter'        : 'lighter',
-#                 'Pressure_vessel': 'pressure_tank',
-#                 'Battery'        : 'battery'}
+replace_name = {'Lighter'        : 'lighter',
+                'Pressure_vessel': 'pressure_tank',
+                'Battery'        : 'battery'}
+# 修改后的文件是否单独保存
+is_copy = False
+xml_path_new = None
 
 # 测试数据
-xml_path = 'dataset/xml/'
-delete_name = ['dog']
-replace_name = {'TRAIN': 'Train'}
+# xml_path = 'dataset/xml/'
+# delete_name = ['dog']
+# replace_name = {'TRAIN': 'Train'}
 
 # 文件名列表
 files = os.listdir(xml_path)
 file_num = len(files)
 print('共读取 {} 个文件'.format(file_num))
+
+start_time = time.time()
 
 for i, xmlFile in enumerate(files):
 
@@ -34,7 +42,6 @@ for i, xmlFile in enumerate(files):
     root = dom.documentElement
 
     objects = root.getElementsByTagName('object')
-    newfilename = root.getElementsByTagName('name')
 
     for i, obj in enumerate(objects):
         class_name = obj.getElementsByTagName('name')[0].firstChild.data
@@ -48,15 +55,15 @@ for i, xmlFile in enumerate(files):
         if class_name in replace_name.keys():
             obj.getElementsByTagName('name')[0].firstChild.data = replace_name[class_name]
             print('-- 替换: {} -> {}'.format(class_name, replace_name[class_name]))
-        
 
-    # for i, t in enumerate(newfilename):
-    #     class_name = t.firstChild.data
-        
-    #     # 后判断替换
-    #     if class_name in replace_name.keys():
-    #         newfilename[i].firstChild.data = replace_name[class_name]
-    #         print('-- 替换: {} -> {}'.format(class_name, replace_name[class_name]))
+    # 确定保存路径
+    if is_copy:
+        xml_name = xml_path_new + '/' + xmlFile
+    else:
+        xml_name = xml_path + '/' + xmlFile
 
-    with open(os.path.join(xml_path, xmlFile), 'w') as fh:
+    # 保存修改后的xml文件
+    with open(xml_name, 'w') as fh:
         dom.writexml(fh)
+
+print('OVER, 用时：{}'.format(time.time() - start_time))
