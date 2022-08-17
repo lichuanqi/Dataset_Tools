@@ -96,7 +96,7 @@ test_label_path  = os.path.join(save_path, 'test/labels')
 train, val, test = 0.7, 0.2, 0.1
 
 # 保存参数
-is_copy = False        # 将分割好的数据集全部图片和标注复制到指定路径下
+is_copy = True        # 将分割好的数据集全部图片和标注复制到指定路径下
 is_txt = True          # 生成 三个txt文件，保存所有图片名称
 
 images_list = os.listdir(jpgs_path)
@@ -127,13 +127,11 @@ print('Test num : ',len(test_list))
 # 生成txt路径文件
 if is_txt:
 
-	txt_write(pre_path, train_list, train_txt_name)
-	txt_write(pre_path, valid_list,val_txt_name)
-	txt_write(pre_path, test_list,test_txt_name)
+	txt_write(pre_path + 'train/images', train_list, train_txt_name)
+	txt_write(pre_path + 'val/images'  , valid_list,val_txt_name)
+	txt_write(pre_path + 'test/images' , test_list,test_txt_name)
 
 	print('TXT is saved')
-
-sys.exit()
 
 # 复制到指定路径
 if is_copy:
@@ -152,21 +150,21 @@ if is_copy:
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(train_image_path,image))
-		shutil.copy(os.path.join(masks_path,name+'.png'), 
-					os.path.join(train_label_path,name+'.png'))
+		# shutil.copy(os.path.join(masks_path,name+'.png'), 
+		# 			os.path.join(train_label_path,name+'.png'))
 	
 	for image in tqdm(valid_list,desc='Val List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(val_image_path,image))
-		shutil.copy(os.path.join(masks_path,name+'.png'), 
-					os.path.join(val_label_path,name+'.png'))
+		# shutil.copy(os.path.join(masks_path,name+'.png'), 
+		# 			os.path.join(val_label_path,name+'.png'))
 
 	for image in tqdm(test_list,desc='Test List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(test_image_path,image))
-		shutil.copy(os.path.join(masks_path,name+'.png'), 
-					os.path.join(test_label_path,name+'.png'))
+		# shutil.copy(os.path.join(masks_path,name+'.png'), 
+		# 			os.path.join(test_label_path,name+'.png'))
 
 	print('====================== Copy End ======================')

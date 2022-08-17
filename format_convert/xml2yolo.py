@@ -95,13 +95,13 @@ def xml_txt(txt_path,
 if __name__ == '__main__':
 
 	# 存放图片的文件目录
-	image_path = 'D:/CodePost/Xray_all/jpgs/'
+	image_path = 'D:/CodePost/Xray_select/test/images/'
 	# 存放xml的文件目录
-	xml_path = 'D:/CodePost/Xray_all/xmls/'
+	xml_path = 'D:/CodePost/Xray_select/xmls/'
 	# yolo存放生成txt的文件目录
-	txt_path = 'D:/CodePost/Xray_all/txts/'
+	txt_path = 'D:/CodePost/Xray_select/test/labels/'
 
-	labels = ['Lighter','Pressure_vessel','Battery','Gun','Fireworks']
+	labels = get_xray13_names()
 
 	# 测试
 	# image_path = 'dataset/jpgs'
@@ -110,12 +110,12 @@ if __name__ == '__main__':
 	# labels = ['person', 'train']
 
 	# 标签
-	labels_rail2 = get_rail2_names()
-	labels_rail14 =get_rail14_names()
-	labels_coco = get_coco_names()
-	labels_icig = get_icig_names()
+	# labels_rail2 = get_rail2_names()
+	# labels_rail14 =get_rail14_names()
+	# labels_coco = get_coco_names()
+	# labels_icig = get_icig_names()
+	# labels = ['Lighter','Pressure_vessel','Battery','Gun','Fireworks']
 
 	xml_txt(txt_path, image_path, xml_path, labels)
 
 	print('Over')
-	time.sleep(50)
