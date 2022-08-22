@@ -32,7 +32,7 @@ def txt_write(path, images_list, txt_name):
 	for image in images_list:
 
 		# Win
-		image_path = path + '/' + image + '\n'
+		image_path = path + image + '\n'
 		# Linux
 		# image_path = os.path.join(jpgs_path,image,'/n')
 
@@ -55,36 +55,25 @@ def txt_write(path, images_list, txt_name):
 # pre_path = '/media/vv/50B0275AB02745B6/lichuan/dataset/Railsample/images'    # 实验室GPU路径
 
 # 数据集路径 - Xary
-jpgs_path = 'D:/CodePost/Xray_select/jpgs/'
-masks_path = 'D:/CodePost/Xray_select/xmls/'
+jpgs_path = 'D:/CodePost/Miandan500/images/'
+masks_path = 'D:/CodePost/Miandan500/masks/'
 
-save_path = 'D:/CodePost/Xray_select/'
+save_path = 'D:/CodePost/Miandan500/'
 pre_path = ''
 train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
 val_txt_name = os.path.join(save_path, 'val.txt')
 test_txt_name = os.path.join(save_path, 'test.txt')
 
-train_image_path = os.path.join(save_path, 'train/images')      # 训练图片
-train_label_path = os.path.join(save_path, 'train/labels')      # 训练标注
-val_image_path   = os.path.join(save_path, 'val/images')
-val_label_path   = os.path.join(save_path, 'val/labels')
-test_image_path  = os.path.join(save_path, 'test/images')
-test_label_path  = os.path.join(save_path, 'test/labels')
-
 # 保存路径 - 自定义
-# save_path = '/media/lcq/Data/modle_and_code/DataSet/RailGuard/train'
-# train_image_path = os.path.join(save_path, 'train_image')
-# train_label_path = os.path.join(save_path, 'train_label')
-# val_image_path   = os.path.join(save_path, 'val_image')
-# val_label_path   = os.path.join(save_path, 'val_label')
-# test_image_path  = os.path.join(save_path, 'test_image')
-# test_label_path  = os.path.join(save_path, 'test_label')
+train_image_path = os.path.join(save_path, 'train_image')
+train_label_path = os.path.join(save_path, 'train_label')
+val_image_path   = os.path.join(save_path, 'val_image')
+val_label_path   = os.path.join(save_path, 'val_label')
+test_image_path  = os.path.join(save_path, 'test_image')
+test_label_path  = os.path.join(save_path, 'test_label')
 
 # 保存路径 - YOLO V5训练用
 # save_path = 'D:/Code/DATASET/RailSample'
-# train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
-# val_txt_name = os.path.join(save_path, 'val.txt')
-# test_txt_name = os.path.join(save_path, 'test.txt')
 # train_image_path = os.path.join(save_path, 'train/images')      # 训练图片
 # train_label_path = os.path.join(save_path, 'train/labels')      # 训练标注
 # val_image_path   = os.path.join(save_path, 'val/images')
@@ -93,7 +82,7 @@ test_label_path  = os.path.join(save_path, 'test/labels')
 # test_label_path  = os.path.join(save_path, 'test/labels')
 
 # 划分比例
-train, val, test = 0.7, 0.2, 0.1
+train, val, test = 0.75, 0.2, 0.05
 
 # 保存参数
 is_copy = True        # 将分割好的数据集全部图片和标注复制到指定路径下
@@ -112,7 +101,6 @@ random.shuffle(images_list)
 # 按照顺序排序
 # images_list.sort(key=lambda x:int(x.split('.')[0]))
 
- 
 train_list = images_list[0:alpha]
 valid_list = images_list[alpha:beta]
 test_list  = images_list[beta:gamma]
@@ -127,9 +115,12 @@ print('Test num : ',len(test_list))
 # 生成txt路径文件
 if is_txt:
 
-	txt_write(pre_path + 'train/images', train_list, train_txt_name)
-	txt_write(pre_path + 'val/images'  , valid_list,val_txt_name)
-	txt_write(pre_path + 'test/images' , test_list,test_txt_name)
+	if pre_path	== '':
+		pre_path = jpgs_path
+
+	txt_write(pre_path , train_list, train_txt_name)
+	txt_write(pre_path , valid_list, val_txt_name)
+	txt_write(pre_path , test_list, test_txt_name)
 
 	print('TXT is saved')
 
@@ -150,21 +141,21 @@ if is_copy:
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(train_image_path,image))
-		# shutil.copy(os.path.join(masks_path,name+'.png'), 
-		# 			os.path.join(train_label_path,name+'.png'))
+		shutil.copy(os.path.join(masks_path,name+'.png'), 
+					os.path.join(train_label_path,name+'.png'))
 	
 	for image in tqdm(valid_list,desc='Val List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(val_image_path,image))
-		# shutil.copy(os.path.join(masks_path,name+'.png'), 
-		# 			os.path.join(val_label_path,name+'.png'))
+		shutil.copy(os.path.join(masks_path,name+'.png'), 
+					os.path.join(val_label_path,name+'.png'))
 
 	for image in tqdm(test_list,desc='Test List'):
 		name = image.split('.')[0]
 		shutil.copy(os.path.join(jpgs_path,image), 
 					os.path.join(test_image_path,image))
-		# shutil.copy(os.path.join(masks_path,name+'.png'), 
-		# 			os.path.join(test_label_path,name+'.png'))
+		shutil.copy(os.path.join(masks_path,name+'.png'), 
+					os.path.join(test_label_path,name+'.png'))
 
 	print('====================== Copy End ======================')

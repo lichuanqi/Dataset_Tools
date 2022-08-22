@@ -139,6 +139,10 @@ def get_xray13_names():
     return xray13_names
     
 
+cityspace_names    = ["background","aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+
+
+
 if __name__ == '__main__':
 
     FSOD_dic = get_FSOD_dic()
