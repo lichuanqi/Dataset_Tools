@@ -13,5 +13,4 @@ __pycache__/
 *.png
 *.csv
 *.xml
-*.txt
 *.json

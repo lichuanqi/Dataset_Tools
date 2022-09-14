@@ -95,13 +95,15 @@ def xml_txt(txt_path,
 if __name__ == '__main__':
 
 	# 存放图片的文件目录
-	image_path = 'D:/CodePost/Xray_select/test/images/'
+	image_path = '/home/xxtc/lichuan/Dataset/baidu783+433/images/'
 	# 存放xml的文件目录
-	xml_path = 'D:/CodePost/Xray_select/xmls/'
+	xml_path = '/home/xxtc/lichuan/Dataset/baidu783+433/Annotations/'
 	# yolo存放生成txt的文件目录
-	txt_path = 'D:/CodePost/Xray_select/test/labels/'
-
-	labels = get_xray13_names()
+	txt_path = '/home/xxtc/lichuan/Dataset/baidu783+433/txts/'
+	# 标签
+	labels = ['smoke']
+	
+	# labels = get_xray13_names()
 
 	# 测试
 	# image_path = 'dataset/jpgs'

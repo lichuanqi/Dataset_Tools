@@ -10,22 +10,28 @@ import xml.dom.minidom
 
 
 # xml文件存放路径
-xml_path = 'D:/CodePost/Xray_select/xmls'
+xml_path = '/home/xxtc/lichuan/Dataset/baidu783+433/Annotations/'
+
+
 # 需删除的类名
-delete_name = ['spray_alcohol','metal_can','iron_shoe', 'glass_bottle','umbrella',
-               'nail_clippers','metal_cup','scissor', 'drink_bottle']
+# delete_name = ['spray_alcohol','metal_can','iron_shoe', 'glass_bottle','umbrella',
+#               'nail_clippers','metal_cup','scissor', 'drink_bottle']
 # 需替换的类名 {'原始类别名称': '新名称'}
-replace_name = {'Lighter'        : 'lighter',
-                'Pressure_vessel': 'pressure_tank',
-                'Battery'        : 'battery'}
-# 修改后的文件是否单独保存
-is_copy = False
-xml_path_new = None
+# replace_name = {'Lighter'        : 'lighter',
+#                'Pressure_vessel': 'pressure_tank',
+#                'Battery'        : 'battery'}
 
 # 测试数据
 # xml_path = 'dataset/xml/'
 # delete_name = ['dog']
 # replace_name = {'TRAIN': 'Train'}
+
+delete_name = []
+replace_name = { 'smoking': 'smoke'}
+
+# 修改后的文件是否单独保存
+is_copy = False
+xml_path_new = None
 
 # 文件名列表
 files = os.listdir(xml_path)

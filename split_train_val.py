@@ -55,10 +55,10 @@ def txt_write(path, images_list, txt_name):
 # pre_path = '/media/vv/50B0275AB02745B6/lichuan/dataset/Railsample/images'    # 实验室GPU路径
 
 # 数据集路径 - Xary
-jpgs_path = 'D:/CodePost/Miandan500/images/'
-masks_path = 'D:/CodePost/Miandan500/masks/'
+jpgs_path = '/home/xxtc/lichuan/Dataset/baidu783+433/images/'
+masks_path = '/home/xxtc/lichuan/Dataset/baidu783+433/labels/'
 
-save_path = 'D:/CodePost/Miandan500/'
+save_path = '/home/xxtc/lichuan/Dataset/baidu783+433/'
 pre_path = ''
 train_txt_name = os.path.join(save_path, 'train.txt')           # train.txt
 val_txt_name = os.path.join(save_path, 'val.txt')
@@ -85,7 +85,7 @@ test_label_path  = os.path.join(save_path, 'test_label')
 train, val, test = 0.75, 0.2, 0.05
 
 # 保存参数
-is_copy = True        # 将分割好的数据集全部图片和标注复制到指定路径下
+is_copy = False        # 将分割好的数据集全部图片和标注复制到指定路径下
 is_txt = True          # 生成 三个txt文件，保存所有图片名称
 
 images_list = os.listdir(jpgs_path)
